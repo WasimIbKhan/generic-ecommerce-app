@@ -1,3 +1,4 @@
+import {getFirestore, getDocs, collection, addDoc } from "firebase/firestore"; 
 import Order from '../../models/order';
 
 export const ADD_ORDER = 'ADD_ORDER';
@@ -6,29 +7,25 @@ export const SET_ORDERS = 'SET_ORDERS';
 export const fetchOrders = () => {
   return async (dispatch, getState) => {
     const userId = getState().auth.userId;
+
+    const db = getFirestore()
+
+    const loadedOrders = []
     try {
-      const response = await fetch(
-        `https://ng-prj-test.firebaseio.com/orders/${userId}.json`
-      );
+      await getDocs(collection(db, `orders/${userId}`)).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          loadedOrders.push(
+              new Order(
+                doc.id,
+                doc.data().cardItems,
+                doc.data().totalAmount,
+                doc.data().date
+              )
+            );
+        });
+      });
 
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
-
-      const resData = await response.json();
-      const loadedOrders = [];
-
-      for (const key in resData) {
-        loadedOrders.push(
-          new Order(
-            key,
-            resData[key].cartItems,
-            resData[key].totalAmount,
-            new Date(resData[key].date)
-          )
-        );
-      }
-      dispatch({ type: SET_ORDERS, orders: loadedOrders });
+      dispatch({ type: SET_ORDERS, orders: loadedOrders});
     } catch (err) {
       throw err;
     }
@@ -37,38 +34,30 @@ export const fetchOrders = () => {
 
 export const addOrder = (cartItems, totalAmount) => {
   return async (dispatch, getState) => {
-    const token = getState().auth.token;
+    
     const userId = getState().auth.userId;
+
+    const db = getFirestore()
+
     const date = new Date();
-    const response = await fetch(
-      `https://ng-prj-test.firebaseio.com/orders/${userId}.json?auth=${token}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          cartItems,
-          totalAmount,
-          date: date.toISOString()
-        })
-      }
-    );
 
-    if (!response.ok) {
-      throw new Error('Something went wrong!');
-    }
+    await addDoc(collection(db, `orders/${userId}`), {
+      cartItems: cartItems,
+      totalAmount: totalAmount,
+      date: date.toISOString()
+    }).then(async(ref) => {
+      newId = ref.id
+    })
 
-    const resData = await response.json();
+      dispatch({
+        type: ADD_ORDER,
+        orderData: {
+          id: ordersRef.id,
+          items: cartItems,
+          amount: totalAmount,
+          date: date
+        }
+      });
 
-    dispatch({
-      type: ADD_ORDER,
-      orderData: {
-        id: resData.name,
-        items: cartItems,
-        amount: totalAmount,
-        date: date
-      }
-    });
   };
 };

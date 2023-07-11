@@ -1,109 +1,68 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { initializeApp } from 'firebase/app';
+import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 
-// export const SIGNUP = 'SIGNUP';
-// export const LOGIN = 'LOGIN';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 export const SET_DID_TRY_AL = 'SET_DID_TRY_AL';
 
 let timer;
 
+
+
+
 export const setDidTryAL = () => {
   return { type: SET_DID_TRY_AL };
 };
 
-export const authenticate = (userId, token, expiryTime) => {
+export const authenticate = (userId, token) => {
   return dispatch => {
-    dispatch(setLogoutTimer(expiryTime));
     dispatch({ type: AUTHENTICATE, userId: userId, token: token });
   };
 };
 
-export const signup = (email, password) => {
+export const signup = (email, fullname, phoneNumber, password) => {
   return async dispatch => {
-    const response = await fetch(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAwgME943HeTkyX9QJak260PNbYZfQI58Q',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          returnSecureToken: true
-        })
-      }
-    );
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+      const userId = firebaseUser.uid;
+      const idToken = await firebaseUser.getIdToken();
 
-    if (!response.ok) {
-      const errorResData = await response.json();
-      const errorId = errorResData.error.message;
-      let message = 'Something went wrong!';
-      if (errorId === 'EMAIL_EXISTS') {
-        message = 'This email exists already!';
-      }
-      throw new Error(message);
+      const db = getFirestore()
+      
+      await setDoc(doc(db, 'users', userId), {
+        email: email,
+        phoneNumber: phoneNumber,
+        fullName: fullname,
+        dateJoined: new Date().toString(),
+      });
+
+      dispatch(authenticate(userId, idToken));
+      saveDataToStorage(idToken, userId);
+    } catch (error) {
+      // Handle signup error
+      console.log(error);
     }
-
-    const resData = await response.json();
-    console.log(resData);
-    dispatch(
-      authenticate(
-        resData.localId,
-        resData.idToken,
-        parseInt(resData.expiresIn) * 1000
-      )
-    );
-    const expirationDate = new Date(
-      new Date().getTime() + parseInt(resData.expiresIn) * 1000
-    );
-    saveDataToStorage(resData.idToken, resData.localId, expirationDate);
   };
 };
 
 export const login = (email, password) => {
   return async dispatch => {
-    const response = await fetch(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAwgME943HeTkyX9QJak260PNbYZfQI58Q',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          returnSecureToken: true
-        })
-      }
-    );
+    try {
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+      const idToken = await firebaseUser.getIdToken();
 
-    if (!response.ok) {
-      const errorResData = await response.json();
-      const errorId = errorResData.error.message;
-      let message = 'Something went wrong!';
-      if (errorId === 'EMAIL_NOT_FOUND') {
-        message = 'This email could not be found!';
-      } else if (errorId === 'INVALID_PASSWORD') {
-        message = 'This password is not valid!';
-      }
-      throw new Error(message);
+      dispatch(authenticate(firebaseUser.uid, idToken));
+      saveDataToStorage(idToken, firebaseUser.uid);
+    } catch (error) {
+      // Handle login error
+      console.log(error);
     }
-
-    const resData = await response.json();
-    console.log(resData);
-    dispatch(
-      authenticate(
-        resData.localId,
-        resData.idToken,
-        parseInt(resData.expiresIn) * 1000
-      )
-    );
-    const expirationDate = new Date(
-      new Date().getTime() + parseInt(resData.expiresIn) * 1000
-    );
-    saveDataToStorage(resData.idToken, resData.localId, expirationDate);
   };
 };
 
@@ -133,7 +92,7 @@ const saveDataToStorage = (token, userId, expirationDate) => {
     JSON.stringify({
       token: token,
       userId: userId,
-      expiryDate: expirationDate.toISOString()
+      expiryDate: expirationDate.toISOString(),
     })
   );
 };

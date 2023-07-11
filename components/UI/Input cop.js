@@ -46,7 +46,7 @@ const Input = props => {
     if (props.email && !emailRegex.test(text.toLowerCase())) {
       isValid = false;
     }
-    if (props.min != null && + text < props.min) {
+    if (props.min != null && +text < props.min) {
       isValid = false;
     }
     if (props.max != null && +text > props.max) {
@@ -64,7 +64,7 @@ const Input = props => {
 
   return (
     <View style={styles.formControl}>
-      <Text style={{...styles.inputLabel, ...props.style}}>{props.label}</Text>
+      <Text style={styles.label}>{props.label}</Text>
       <TextInput
         {...props}
         style={styles.input}
@@ -86,28 +86,18 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   label: {
-    fontFamily: 'open-sans-bold',
     marginVertical: 8
   },
-  inputLabel: {
-    fontSize: 17,
-    marginLeft : '5%',
-    fontFamily: 'open-sans-bold'
-  },
   input: {
-    backgroundColor: '#f4f4f4',
-    paddingVertical: '2%',
-    paddingHorizontal: '3%',
-    marginHorizontal: '5%',
-    marginVertical: '2%',
-    borderRadius: 10
+    paddingHorizontal: 2,
+    paddingVertical: 5,
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1
   },
   errorContainer: {
-    marginVertical: '2%',
-    marginHorizontal: '5%',
+    marginVertical: 5
   },
   errorText: {
-    fontFamily: 'open-sans',
     color: 'red',
     fontSize: 13
   }
