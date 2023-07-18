@@ -23,7 +23,7 @@ const ProductsOverviewScreen = props => {
   const [error, setError] = useState();
   const products = useSelector(state => state.products.availableProducts);
   const dispatch = useDispatch();
-
+  console.log(products)
   const loadProducts = useCallback(async () => {
     setError(null);
     setIsRefreshing(true);
@@ -60,7 +60,7 @@ const ProductsOverviewScreen = props => {
   if (error) {
     return (
       <View style={styles.centered}>
-        <Text>An error occurred!</Text>
+        <Text>{error}</Text>
         <Button
           title="Try again"
           onPress={loadProducts}
@@ -150,7 +150,7 @@ export const screenOptions = navData => {
 };
 
 const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' }
+  centered: { flex: 1}
 });
 
 export default ProductsOverviewScreen;

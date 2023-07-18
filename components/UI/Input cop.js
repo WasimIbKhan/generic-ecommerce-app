@@ -35,7 +35,7 @@ const Input = props => {
     if (inputState.touched) {
       onInputChange(id, inputState.value, inputState.isValid);
     }
-  }, [inputState, onInputChange, id]);
+  }, [inputState, onInputChange, id, props.value]); // Include props.value as a dependency
 
   const textChangeHandler = text => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -64,7 +64,7 @@ const Input = props => {
 
   return (
     <View style={styles.formControl}>
-      <Text style={styles.label}>{props.label}</Text>
+      <Text style={{ ...styles.inputLabel, ...props.style }}>{props.label}</Text>
       <TextInput
         {...props}
         style={styles.input}

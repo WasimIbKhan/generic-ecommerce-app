@@ -35,7 +35,7 @@ const Input = props => {
     if (inputState.touched) {
       onInputChange(id, inputState.value, inputState.isValid);
     }
-  }, [inputState, onInputChange, id]);
+  }, [inputState, onInputChange, id, props.value]); // Include props.value as a dependency
 
   const textChangeHandler = text => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -46,7 +46,7 @@ const Input = props => {
     if (props.email && !emailRegex.test(text.toLowerCase())) {
       isValid = false;
     }
-    if (props.min != null && + text < props.min) {
+    if (props.min != null && +text < props.min) {
       isValid = false;
     }
     if (props.max != null && +text > props.max) {
@@ -64,7 +64,7 @@ const Input = props => {
 
   return (
     <View style={styles.formControl}>
-      <Text style={{...styles.inputLabel, ...props.style}}>{props.label}</Text>
+      <Text style={{ ...styles.inputLabel, ...props.style }}>{props.label}</Text>
       <TextInput
         {...props}
         style={styles.input}
@@ -86,13 +86,11 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   label: {
-    fontFamily: 'open-sans-bold',
     marginVertical: 8
   },
   inputLabel: {
     fontSize: 17,
-    marginLeft : '5%',
-    fontFamily: 'open-sans-bold'
+    marginLeft: '5%'
   },
   input: {
     backgroundColor: '#f4f4f4',
@@ -104,10 +102,9 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     marginVertical: '2%',
-    marginHorizontal: '5%',
+    marginHorizontal: '5%'
   },
   errorText: {
-    fontFamily: 'open-sans',
     color: 'red',
     fontSize: 13
   }

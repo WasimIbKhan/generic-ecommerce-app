@@ -5,15 +5,14 @@ export const CREATE_PRODUCT = 'CREATE_PRODUCT';
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
-import {getFirestore, getDocs, deleteDoc, updateDoc } from "firebase/firestore"; 
+import {getFirestore, getDocs, deleteDoc, updateDoc, addDoc, doc, collection } from "firebase/firestore"; 
 
 export const fetchProducts = () => {
   return async (dispatch, getState) => {
     // any async code you want!
+    const userId = getState().auth.userId;
     const db = getFirestore()
-
     const loadedProducts = []
-
     try {
       await getDocs(collection(db, `products`)).then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -29,8 +28,12 @@ export const fetchProducts = () => {
             );
         });
       });
-
-      dispatch({ type: SET_ORDERS, orders: loadedProducts});
+      console.log('fetch product')
+      console.log(loadedProducts)
+      dispatch({ type: SET_PRODUCTS,
+        products: loadedProducts,
+        userProducts: loadedProducts.filter(prod => prod.ownerId === userId)
+      });
     } catch (err) {
       throw err;
     }
@@ -39,17 +42,9 @@ export const fetchProducts = () => {
 
 export const deleteProduct = productId => {
   return async (dispatch, getState) => {
-    const token = getState().auth.token;
-    const response = await fetch(
-      `https://ng-prj-test.firebaseio.com/products/${productId}.json?auth=${token}`,
-      {
-        method: 'DELETE'
-      }
-    );
 
-    if (!response.ok) {
-      throw new Error('Something went wrong!');
-    }
+    await deleteDoc(doc(db, "products", productId))
+    
     dispatch({ type: DELETE_PRODUCT, pid: productId });
   };
 };
@@ -57,31 +52,23 @@ export const deleteProduct = productId => {
 export const createProduct = (title, description, imageUrl, price) => {
   return async (dispatch, getState) => {
     // any async code you want!
-    const token = getState().auth.token;
     const userId = getState().auth.userId;
-    const response = await fetch(
-      `https://ng-prj-test.firebaseio.com/products.json?auth=${token}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          imageUrl,
-          price,
-          ownerId: userId
-        })
-      }
-    );
+    let newId; 
+    await addDoc(collection(db, `products`), {
+      ownerId: userId,
+      title: title,
+      totalAmount: totalAmount,
+      imageUrl: imageUrl,
+      price: price
+    }).then(async(ref) => {
+      newId = ref.id
+    })
 
-    const resData = await response.json();
 
     dispatch({
       type: CREATE_PRODUCT,
       productData: {
-        id: resData.name,
+        id: newId,
         title,
         description,
         imageUrl,

@@ -54,14 +54,12 @@ const AuthScreen = props => {
     inputValues: {
       email: '',
       name: '',
-      tag: '',
       phoneNumber: '',
       password: ''
     },
     inputValidities: {
       email: false,
       name: false,
-      tag: false,
       phoneNumber: false,
       password: false
     },
@@ -84,7 +82,7 @@ const AuthScreen = props => {
           formState.inputValues.name,
           formState.inputValues.phoneNumber,
           formState.inputValues.password
-          ))
+        ))
       } else {
         await dispatch(authActions.login(
           formState.inputValues.email,
@@ -109,7 +107,6 @@ const AuthScreen = props => {
     [dispatchFormState]
   );
   let signUpInputName
-  let signUpInputId 
   let signUpNumber
   if(isSignup) {
     signUpInputName = <Input
@@ -137,7 +134,7 @@ const AuthScreen = props => {
       style={styles.screen}
     >
       <ScrollView>
-        <Text style={styles.title}>E-commerce</Text>
+        <Text style={styles.title}>Persona</Text>
         <Input
           id="email"
           label="E-Mail"
@@ -161,7 +158,6 @@ const AuthScreen = props => {
               required
               minLength={5}
               autoCapitalize="none"
-              autoCorrect={false}
               errorText="Please enter a valid password."
               onInputChange={inputChangeHandler}
               initialValue=""
@@ -176,7 +172,6 @@ const AuthScreen = props => {
             <View style={styles.buttonContainer}>
               <AuthBtn2 title={`${isSignup ? 'Login' : 'Sign Up'}`} state={isSignup} onPress={() => { setIsSignup(prevState => !prevState)}}/>
             </View>
-            
           </ScrollView>
           <View style={styles.bottomPosition}>
               <AuthBtn2 title={'Forgot your password?'} state={false} onPress={() => props.navigation.navigate('ResetPassword')}/>

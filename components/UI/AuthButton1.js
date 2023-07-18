@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight: '800',
-    fontFamily: 'open-sans',
     alignSelf: 'center',
     fontSize: 18
   }

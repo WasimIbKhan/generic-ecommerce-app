@@ -8,6 +8,7 @@ import StartupScreen from '../screens/StartupScreen';
 const AppNavigator = props => {
   const isAuth = useSelector(state => !!state.auth.token);
   const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
+
   return (
     <NavigationContainer>
       {isAuth && <ShopNavigator />}

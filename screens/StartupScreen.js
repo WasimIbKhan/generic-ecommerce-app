@@ -5,8 +5,7 @@ import {
   StyleSheet
 } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth';
 
@@ -15,7 +14,6 @@ const StartupScreen = props => {
 
   useEffect(() => {
     const tryLogin = async () => {
-      console.log('here')
       const userData = await AsyncStorage.getItem('userData');
       if (!userData) {
         // props.navigation.navigate('Auth');

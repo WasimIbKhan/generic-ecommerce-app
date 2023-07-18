@@ -6,10 +6,12 @@ import productsReducer from './store/reducers/products';
 import cartReducer from './store/reducers/cart';
 import ordersReducer from './store/reducers/orders';
 import authReducer from './store/reducers/auth';
-import ShopNavigator from './navigation/ShopNavigator';
+import AppNavigator from './navigation/AppNavigator';
 import ApiKeys from "./constants/ApiKeys";
 import { initializeApp } from "firebase/app";
 import "firebase/app"
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
+
 const rootReducer = combineReducers({
   products: productsReducer,
   cart: cartReducer,
@@ -22,10 +24,9 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 export default function App() {
 
   initializeApp(ApiKeys.FirebaseConfig)
-  
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <AppNavigator />
     </Provider>
   );
 }

@@ -27,9 +27,9 @@ import UserProductsScreen, {
 import EditProductScreen, {
   screenOptions as editProductScreenOptions
 } from '../screens/user/EditProductScreen';
-import AuthScreen, {
+import AuthScreen2, {
   screenOptions as authScreenOptions
-} from '../screens/user/AuthScreen';
+} from '../screens/user/AuthScreen2';
 import StartupScreen from '../screens/StartupScreen';
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth';
@@ -104,10 +104,9 @@ export function AdminNavigator() {
 
 const ShopDrawerNavigator = createDrawerNavigator();
 
-export default function ShopNavigator() {
+export function ShopNavigator() {
   const dispatch = useDispatch();
   return (
-    <NavigationContainer>
     <ShopDrawerNavigator.Navigator
       drawerContent={props => {
         return (
@@ -173,40 +172,8 @@ export default function ShopNavigator() {
         }}
       />
     </ShopDrawerNavigator.Navigator>
-    </NavigationContainer>
   );
 };
-
-// const ShopNavigator = createDrawerNavigator(
-//   {
-//     Products: ProductsNavigator,
-//     Orders: OrdersNavigator,
-//     Admin: AdminNavigator
-//   },
-//   {
-//     contentOptions: {
-//       activeTintColor: Colors.primary
-//     },
-//     contentComponent: props => {
-//       const dispatch = useDispatch();
-//       return (
-//         <View style={{ flex: 1, paddingTop: 20 }}>
-//           <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
-//             <DrawerItems {...props} />
-//             <Button
-//               title="Logout"
-//               color={Colors.primary}
-//               onPress={() => {
-//                 dispatch(authActions.logout());
-//                 // props.navigation.navigate('Auth');
-//               }}
-//             />
-//           </SafeAreaView>
-//         </View>
-//       );
-//     }
-//   }
-// );
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -215,26 +182,10 @@ export const AuthNavigator = () => {
     <AuthStackNavigator.Navigator screenOptions={defaultNavOptions}>
       <AuthStackNavigator.Screen
         name="Auth"
-        component={AuthScreen}
-        options={authScreenOptions}
+        component={AuthScreen2}
+        options={{headerShown: false}}
       />
     </AuthStackNavigator.Navigator>
   );
-};
+}
 
-// const AuthNavigator = createStackNavigator(
-//   {
-//     Auth: AuthScreen
-//   },
-//   {
-//     defaultNavigationOptions: defaultNavOptions
-//   }
-// );
-
-// const MainNavigator = createSwitchNavigator({
-//   Startup: StartupScreen,
-//   Auth: AuthNavigator,
-//   Shop: ShopNavigator
-// });
-
-// export default createAppContainer(MainNavigator);

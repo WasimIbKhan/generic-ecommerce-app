@@ -1,4 +1,4 @@
-import {getFirestore, getDocs, collection, addDoc } from "firebase/firestore"; 
+import {getFirestore, getDocs, collection, addDoc, setDoc } from "firebase/firestore"; 
 import Order from '../../models/order';
 
 export const ADD_ORDER = 'ADD_ORDER';
@@ -41,12 +41,10 @@ export const addOrder = (cartItems, totalAmount) => {
 
     const date = new Date();
 
-    await addDoc(collection(db, `orders/${userId}`), {
+    await setDoc(collection(db, `orders/${userId}`), {
       cartItems: cartItems,
       totalAmount: totalAmount,
       date: date.toISOString()
-    }).then(async(ref) => {
-      newId = ref.id
     })
 
       dispatch({

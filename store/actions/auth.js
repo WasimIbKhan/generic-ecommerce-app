@@ -32,7 +32,7 @@ export const signup = (email, fullname, phoneNumber, password) => {
       const idToken = await firebaseUser.getIdToken();
 
       const db = getFirestore()
-      
+
       await setDoc(doc(db, 'users', userId), {
         email: email,
         phoneNumber: phoneNumber,
@@ -41,7 +41,7 @@ export const signup = (email, fullname, phoneNumber, password) => {
       });
 
       dispatch(authenticate(userId, idToken));
-      saveDataToStorage(idToken, userId);
+      await saveDataToStorage(idToken, userId);
     } catch (error) {
       // Handle signup error
       console.log(error);
@@ -58,7 +58,7 @@ export const login = (email, password) => {
       const idToken = await firebaseUser.getIdToken();
 
       dispatch(authenticate(firebaseUser.uid, idToken));
-      saveDataToStorage(idToken, firebaseUser.uid);
+      await saveDataToStorage(idToken, firebaseUser.uid);
     } catch (error) {
       // Handle login error
       console.log(error);
@@ -86,13 +86,10 @@ const setLogoutTimer = expirationTime => {
   };
 };
 
-const saveDataToStorage = (token, userId, expirationDate) => {
-  AsyncStorage.setItem(
-    'userData',
-    JSON.stringify({
-      token: token,
-      userId: userId,
-      expiryDate: expirationDate.toISOString(),
-    })
-  );
+const saveDataToStorage = async(token, userId, expirationDate) => {
+  const jsonValue = JSON.stringify({
+    token: token,
+    userId: userId
+  });
+  await AsyncStorage.setItem('userData', jsonValue);
 };
