@@ -1,5 +1,6 @@
 import React, { useReducer, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
+import Colors from '../../constants/Colors';
 
 const INPUT_CHANGE = 'INPUT_CHANGE';
 const INPUT_BLUR = 'INPUT_BLUR';
@@ -93,7 +94,8 @@ const styles = StyleSheet.create({
     marginLeft: '5%'
   },
   input: {
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#f5f4f5',
+    borderColor: Colors.primary,
     paddingVertical: '2%',
     paddingHorizontal: '3%',
     marginHorizontal: '5%',

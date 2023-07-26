@@ -22,7 +22,7 @@ export const authenticate = (userId, token) => {
   };
 };
 
-export const signup = (email, fullname, phoneNumber, password) => {
+export const signup = (email, fullname, phoneNumber, address, password) => {
   return async dispatch => {
     try {
       const auth = getAuth();
@@ -37,6 +37,7 @@ export const signup = (email, fullname, phoneNumber, password) => {
         email: email,
         phoneNumber: phoneNumber,
         fullName: fullname,
+        address: address, 
         dateJoined: new Date().toString(),
       });
 

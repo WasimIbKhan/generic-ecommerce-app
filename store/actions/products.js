@@ -28,8 +28,6 @@ export const fetchProducts = () => {
             );
         });
       });
-      console.log('fetch product')
-      console.log(loadedProducts)
       dispatch({ type: SET_PRODUCTS,
         products: loadedProducts,
         userProducts: loadedProducts.filter(prod => prod.ownerId === userId)
@@ -42,7 +40,7 @@ export const fetchProducts = () => {
 
 export const deleteProduct = productId => {
   return async (dispatch, getState) => {
-
+    const db = getFirestore()
     await deleteDoc(doc(db, "products", productId))
     
     dispatch({ type: DELETE_PRODUCT, pid: productId });
@@ -54,10 +52,11 @@ export const createProduct = (title, description, imageUrl, price) => {
     // any async code you want!
     const userId = getState().auth.userId;
     let newId; 
+    const db = getFirestore()
     await addDoc(collection(db, `products`), {
       ownerId: userId,
       title: title,
-      totalAmount: totalAmount,
+      description: description,
       imageUrl: imageUrl,
       price: price
     }).then(async(ref) => {

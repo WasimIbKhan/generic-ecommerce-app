@@ -13,7 +13,7 @@ const AuthBtn = props => {
 
 const styles = StyleSheet.create({
   buttonText: {
-    color: 'black',
+    color: Colors.primary,
     alignSelf: 'center',
     fontSize: 14
   }

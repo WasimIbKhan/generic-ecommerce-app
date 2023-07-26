@@ -16,7 +16,7 @@ const AuthBtn = props => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: 'white',
-    borderColor: Colors.darkMode,
+    borderColor: Colors.primary,
     borderWidth: 1,
     paddingVertical: Dimensions.get('window').height * 0.015,
     paddingHorizontal: '3%',

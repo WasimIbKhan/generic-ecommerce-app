@@ -16,7 +16,6 @@ import Loading from '../../components/UI/Loading';
 import Colors from '../../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
 import * as authActions from '../../store/actions/auth';
-
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
 const formReducer = (state, action) => {
@@ -55,12 +54,14 @@ const AuthScreen = props => {
       email: '',
       name: '',
       phoneNumber: '',
+      address: '',
       password: ''
     },
     inputValidities: {
       email: false,
       name: false,
       phoneNumber: false,
+      address: false,
       password: false
     },
     formIsValid: false
@@ -81,6 +82,7 @@ const AuthScreen = props => {
           formState.inputValues.email,
           formState.inputValues.name,
           formState.inputValues.phoneNumber,
+          formState.inputValues.address,
           formState.inputValues.password
         ))
       } else {
@@ -91,6 +93,7 @@ const AuthScreen = props => {
         }
     } catch (err) {
       setError(err.message);
+      console.log(error)
     }
     setIsLoading(false);
   };
@@ -108,6 +111,7 @@ const AuthScreen = props => {
   );
   let signUpInputName
   let signUpNumber
+  let address
   if(isSignup) {
     signUpInputName = <Input
     id="name"
@@ -125,6 +129,14 @@ const AuthScreen = props => {
     onInputChange={inputChangeHandler}
     initialValue=""
   />
+  address = <Input
+    id="address"
+    label="Address"
+    keyboardType="default"
+    required
+    onInputChange={inputChangeHandler}
+    initialValue=""
+  />
   }
   if(isLoading) {
     return(<Loading />)
@@ -134,7 +146,7 @@ const AuthScreen = props => {
       style={styles.screen}
     >
       <ScrollView>
-        <Text style={styles.title}>Persona</Text>
+        <Text style={styles.title}>e-commerce</Text>
         <Input
           id="email"
           label="E-Mail"
@@ -150,6 +162,7 @@ const AuthScreen = props => {
           />
           {signUpInputName}
           {signUpNumber}
+          {address}
             <Input
               id="password"
               label="Password"
@@ -164,9 +177,9 @@ const AuthScreen = props => {
             />
             <View style={styles.buttonContainer}>
             {isSignup ? (
-                <AuthBtn1 title={isSignup ? 'Sign Up' : 'Login'} state={isSignup} onPress={isSignup? isSelected? authHandler : null: authHandler} style={isSignup ? isSelected? {color: 'black', borderColor: Colors.darkMode}: {color: 'grey', borderColor: 'grey'}:  {color: 'black', borderColor: Colors.darkMode}}/>
+                <AuthBtn1 title={isSignup ? 'Sign Up' : 'Login'} state={isSignup} onPress={authHandler} style={isSignup ? isSelected? {color: 'black', borderColor: Colors.primary}: {color: Colors.primary, borderColor: Colors.primary}:  {color: Colors.primary, borderColor: Colors.primary}}/>
               ) : (
-                <AuthBtn1 title={isSignup ? 'Sign Up' : 'Login'} state={isSignup} onPress={isSignup? isSelected? authHandler : null: authHandler} style={isSignup ? isSelected? {color: 'black', borderColor: Colors.darkMode}: {color: 'grey', borderColor: 'grey'}:  {color: 'black', borderColor: Colors.darkMode}}/>
+                <AuthBtn1 title={isSignup ? 'Sign Up' : 'Login'} state={isSignup} onPress={authHandler} style={isSignup ? isSelected? {color: 'black', borderColor: Colors.primary}: {color: Colors.primary, borderColor: Colors.primary}:  {color: Colors.primary, borderColor: Colors.primary}}/>
               )}
             </View>
             <View style={styles.buttonContainer}>
@@ -190,8 +203,9 @@ const styles = StyleSheet.create({
     fontFamily: 'lato.thin',
     fontSize: 54,
     alignSelf: 'center',
-    marginTop: Dimensions.get('window').height * 0.1
-  },
+    marginTop: Dimensions.get('window').height * 0.1,
+    color: Colors.primary
+    },
   checkboxContainer: {
     flexDirection: 'row',
     margin: Dimensions.get('window').width * 0.025
