@@ -12,15 +12,27 @@ import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import HeaderButton from '../../components/UI/HeaderButton';
+import ProductHitItem from '../../components/shop/ProductHitItem';
 import ProductItem from '../../components/shop/ProductItem';
 import * as cartActions from '../../store/actions/cart';
 import * as productsActions from '../../store/actions/products';
 import Colors from '../../constants/Colors';
 
+import algoliasearch from "algoliasearch";
+import { InstantSearch } from "react-instantsearch-native";
+import SearchBox from "../../components/UI/SearchBox";
+import InfiniteHits from "../../components/UI/InfiniteHits";
+
 const ProductsOverviewScreen = props => {
+  const searchClient = algoliasearch(
+    "QNMIJGZQVG",
+    "78701f3e2c1e8c9d64f822c3f0175eab"
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
+  const [focus, setFocus] = useState();
   const products = useSelector(state => state.products.availableProducts);
   const dispatch = useDispatch();
 
@@ -57,6 +69,18 @@ const ProductsOverviewScreen = props => {
     });
   };
 
+  const SearchedProductItem = (item, navigation) => {
+    return (
+      <ProductHitItem hit={item} onSelect={() => {
+        navigation.navigate('ProductDetail', {
+          productId: item.objectID,
+          productTitle: item.title
+        });
+        
+      }}/>
+    )
+  }
+
   if (error) {
     return (
       <View style={styles.centered}>
@@ -87,37 +111,40 @@ const ProductsOverviewScreen = props => {
   }
 
   return (
-    <FlatList
-      onRefresh={loadProducts}
-      refreshing={isRefreshing}
-      data={products}
-      keyExtractor={item => item.id}
-      renderItem={itemData => (
-        <ProductItem
-          image={itemData.item.imageUrl}
-          title={itemData.item.title}
-          price={itemData.item.price}
-          onSelect={() => {
-            selectItemHandler(itemData.item.id, itemData.item.title);
-          }}
-        >
-          <Button
-            color={Colors.primary}
-            title="View Details"
-            onPress={() => {
-              selectItemHandler(itemData.item.id, itemData.item.title);
-            }}
+    <View>
+      <InstantSearch searchClient={searchClient} indexName="products">
+        <SearchBox focus={() => setFocus(!focus)} focusState={focus} search={() => setFocus(true)} />
+        {focus && (
+          <InfiniteHits
+            listItem={SearchedProductItem} navigation={props.navigation}
           />
-          <Button
-            color={Colors.primary}
-            title="To Cart"
-            onPress={() => {
-              dispatch(cartActions.addToCart(itemData.item));
-            }}
-          />
-        </ProductItem>
+        )}
+      </InstantSearch>
+      {!focus && (
+        <FlatList
+          onRefresh={loadProducts}
+          refreshing={isRefreshing}
+          data={products}
+          keyExtractor={item => item.id}
+          renderItem={itemData => (
+            <ProductItem
+              image={itemData.item.imageUrl}
+              title={itemData.item.title}
+              description={itemData.item.description}
+              price={itemData.item.price}
+              isEdit={false}
+              onSelect={() => {
+                selectItemHandler(itemData.item.id, itemData.item.title);
+              }}
+              onAdd={() => {
+                dispatch(cartActions.addToCart(itemData.item));
+              }}
+            />
+          )}
+        />
       )}
-    />
+    </View>
+
   );
 };
 

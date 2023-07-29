@@ -10,7 +10,6 @@ import AppNavigator from './navigation/AppNavigator';
 import ApiKeys from "./constants/ApiKeys";
 import { initializeApp } from "firebase/app";
 import "firebase/app"
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
 
 const rootReducer = combineReducers({
   products: productsReducer,

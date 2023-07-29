@@ -1,11 +1,11 @@
-import {getFirestore, getDocs, collection, doc, setDoc, addDoc } from "firebase/firestore"; 
+import {getFirestore, getDocs, collection, doc, setDoc, addDoc, query, where } from "firebase/firestore"; 
 import Order from '../../models/order';
 
 export const ADD_ORDER = 'ADD_ORDER';
 export const SET_ORDERS = 'SET_ORDERS';
 
-import firebase from 'firebase/app';
-import 'firebase/functions';
+import { httpsCallable, getFunctions } from 'firebase/functions';
+
 
 export const fetchOrders = () => {
   return async (dispatch, getState) => {
@@ -40,7 +40,7 @@ export const addOrder = (cartItems, totalAmount) => {
     const userId = getState().auth.userId;
 
     const db = getFirestore()
-
+    const functions = getFunctions()
     const date = new Date();
 
     let newId;
@@ -54,6 +54,7 @@ export const addOrder = (cartItems, totalAmount) => {
       newId = ref.id
     })
 
+    
     await setDoc(doc(db, `orders/${newId}`), {
       userId: userId,
       cartItems: cartItems,
@@ -61,19 +62,16 @@ export const addOrder = (cartItems, totalAmount) => {
       date: date.toISOString()
     })
 
-    /* cartItems.map(cartItem => 
-      subject.) */
-      try {
-        const sendEmailFunction = firebase.functions().httpsCallable('sendAutomaticEmail');
-        const { data } = await sendEmailFunction({
-          recipientEmail: 'wasimibkhan@gmail.com', // Replace with the recipient's email address
-          subject: 'Automatic Email from React Native',
-          body: 'This is an automatic email sent from a React Native app using Firebase Cloud Functions!',
-        });
-  
-      } catch (error) {
-        console.log('Error', 'An error occurred. Please try again later.');
-      }
+    addDoc(collection(db, `mail`), {
+      to: "wasimibkhan@gmail.com",
+      message: {
+        subject: `Your e-commerce order (${newId})`,
+        text: "Your order will be arriving soon \n ",
+      },
+    }).then(async(ref) => {
+      newId = ref.id
+    })
+
       dispatch({
         type: ADD_ORDER,
         orderData: {

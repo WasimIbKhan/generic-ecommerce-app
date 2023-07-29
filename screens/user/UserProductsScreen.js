@@ -45,24 +45,13 @@ const UserProductsScreen = props => {
         <ProductItem
           image={itemData.item.imageUrl}
           title={itemData.item.title}
+          description={itemData.item.description}
           price={itemData.item.price}
+          isEdit={true}
           onSelect={() => {
             editProductHandler(itemData.item.id);
           }}
-        >
-          <Button
-            color={Colors.primary}
-            title="Edit"
-            onPress={() => {
-              editProductHandler(itemData.item.id);
-            }}
-          />
-          <Button
-            color={Colors.primary}
-            title="Delete"
-            onPress={deleteHandler.bind(this, itemData.item.id)}
-          />
-        </ProductItem>
+        />
       )}
     />
   );

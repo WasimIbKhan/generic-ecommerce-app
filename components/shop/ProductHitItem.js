@@ -12,25 +12,23 @@ import Colors from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 
 import Card from '../UI/Card';
-const ProductItem = props => {
+const ProductHitItem = props => {
     return (
         <TouchableOpacity style={styles.product} onPress={props.onSelect}>
             <Card style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Image style={styles.image} source={{ uri: props.image }} />
+                    <Image style={styles.image} source={{ uri: props.hit.imageUrl }} />
                 </View>
                 <View style={styles.details}>
                     <View style={styles.upperLayer}>
-                        <Text style={styles.title}>{props.title}</Text>
-                        <Text style={styles.description} numberOfLines={4} ellipsizeMode="tail">{props.description}</Text>
+                        <Text style={styles.title}>{props.hit.title}</Text>
+                        <Text style={styles.description} numberOfLines={4} ellipsizeMode="tail">{props.hit.description}</Text>
                     </View>
                     <View style={styles.bottomLayer}>
-                        <Text style={styles.price}>${props.price}</Text>
-                        {props.isEdit? (<TouchableOpacity style={styles.buyButton} onPress={props.onSelect}>
-                            <Text style={styles.addText}>Edit</Text>
-                        </TouchableOpacity>): (<TouchableOpacity style={styles.buyButton} onPress={props.onAdd}>
+                        <Text style={styles.price}>${props.hit.price}</Text>
+                        <TouchableOpacity style={styles.buyButton} onPress={props.addCart}>
                             <Text style={styles.addText}>Buy</Text>
-                        </TouchableOpacity>)}
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Card>
@@ -112,4 +110,4 @@ const styles = StyleSheet.create({
     }, 
 });
 
-export default ProductItem;
+export default ProductHitItem;
