@@ -3,6 +3,7 @@ import {
   DELETE_PRODUCT,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
+  UPDATE_PRODUCTS,
   SET_PRODUCTS
 } from '../actions/products';
 import Product from '../../models/product';
@@ -30,8 +31,13 @@ export default (state = initialState, action) => {
       );
       return {
         ...state,
-        availableProducts: state.availableProducts.concat(newProduct),
+        availableProducts: state.products.concat(newProduct),
         userProducts: state.userProducts.concat(newProduct)
+      };
+    case UPDATE_PRODUCTS:
+      return {
+        ...state,
+        availableProducts: state.availableProducts.concat(action.products)
       };
     case UPDATE_PRODUCT:
       const productIndex = state.userProducts.findIndex(

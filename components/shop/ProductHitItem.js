@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     title: {
-        fontFamily: 'Arial',
+        fontFamily: 'arial',
         fontWeight: 'bold',
         textAlign: 'left',
         color: Colors.accent,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 700,
         justifyContent: 'center',
-        fontFamily: 'Helvetica',
+        fontFamily: 'helvetica',
         color: Colors.accent,
     },
     upperLayer: {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
         marginLeft: 7
     },
     addText: {
-        fontFamily: 'Arial',
+        fontFamily: 'arial',
         fontWeight: 'bold',
         paddingHorizontal: 7,
         color: 'white',

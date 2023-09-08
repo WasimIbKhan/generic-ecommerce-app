@@ -3,9 +3,10 @@ import Product from '../../models/product';
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 export const CREATE_PRODUCT = 'CREATE_PRODUCT';
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
+export const UPDATE_PRODUCTS = 'UPDATE_PRODUCTS';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
-import {getFirestore, getDocs, deleteDoc, updateDoc, addDoc, doc, collection } from "firebase/firestore"; 
+import {getFirestore, getDocs, deleteDoc, updateDoc, addDoc, doc, collection, setDoc } from "firebase/firestore"; 
 
 export const fetchProducts = () => {
   return async (dispatch, getState) => {
@@ -97,6 +98,15 @@ export const updateProduct = (id, title, description, imageUrl) => {
         description,
         imageUrl
       }
+    });
+  };
+};
+
+export const updateProducts = (products) => {
+  return async (dispatch) => {
+    dispatch({
+      type: UPDATE_PRODUCTS,
+      products: products
     });
   };
 };

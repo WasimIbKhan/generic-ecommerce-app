@@ -12,6 +12,9 @@ import { useDispatch } from 'react-redux';
 import ProductsOverviewScreen, {
   screenOptions as productsOverviewScreenOptions
 } from '../screens/shop/ProductsOverviewScreen';
+import MostPopularScreen, {
+  screenOptions as mostPopularScreenOptions
+} from '../screens/shop/MostPopularScreen'
 import ProductDetailScreen, {
   screenOptions as productDetailScreenOptions
 } from '../screens/shop/ProductDetailScreen';
@@ -54,6 +57,11 @@ export function ProductsNavigator() {
         name="ProductsOverview"
         component={ProductsOverviewScreen}
         options={productsOverviewScreenOptions}
+      />
+      <ProductsStackNavigator.Screen
+        name="MostPopular"
+        component={MostPopularScreen}
+        options={mostPopularScreenOptions}
       />
       <ProductsStackNavigator.Screen
         name="ProductDetail"

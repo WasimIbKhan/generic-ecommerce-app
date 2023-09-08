@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,38 +6,36 @@ import {
   Button,
   Platform,
   ActivityIndicator,
-  StyleSheet,
-} from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
+  StyleSheet
+} from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
-import axios from 'axios';
-
-import HeaderButton from "../../components/UI/HeaderButton";
-import ProductHitItem from "../../components/shop/ProductHitItem";
-import ProductItem from "../../components/shop/ProductItem";
-import * as cartActions from "../../store/actions/cart";
-import * as productsActions from "../../store/actions/products";
-import Colors from "../../constants/Colors";
+import HeaderButton from '../../components/UI/HeaderButton';
+import ProductHitItem from '../../components/shop/ProductHitItem';
+import ProductItem from '../../components/shop/ProductItem';
+import * as cartActions from '../../store/actions/cart';
+import * as productsActions from '../../store/actions/products';
+import Colors from '../../constants/Colors';
 
 import algoliasearch from "algoliasearch";
 import { InstantSearch } from "react-instantsearch-native";
 import SearchBox from "../../components/UI/SearchBox";
 import InfiniteHits from "../../components/UI/InfiniteHits";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
-const ProductsOverviewScreen = (props) => {
+import axios from 'axios';
+
+const MostPopularScreen = props => {
   const searchClient = algoliasearch(
     "QNMIJGZQVG",
     "78701f3e2c1e8c9d64f822c3f0175eab"
   );
 
-  const [response, setResponse] = useState()
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
   const [focus, setFocus] = useState();
-  const products = useSelector((state) => state.products.availableProducts);
+  const products = useSelector(state => state.products.availableProducts);
   const dispatch = useDispatch();
 
   const loadProducts = useCallback(async () => {
@@ -52,7 +50,7 @@ const ProductsOverviewScreen = (props) => {
   }, [dispatch, setIsLoading, setError]);
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", loadProducts);
+    const unsubscribe = props.navigation.addListener('focus', loadProducts);
 
     return () => {
       unsubscribe();
@@ -67,43 +65,33 @@ const ProductsOverviewScreen = (props) => {
   }, [dispatch, loadProducts]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Replace 'YOUR_COMPUTER_IP' with your computer's LAN IP address
-        axios.get('http://192.168.1.99:5000/recommendations').then((response) => {
-          dispatch(productsActions.updateProducts(response.data))
-          console.log(response.data)
-        })
-        
-      } catch (error) {
-        console.error("Error fetching recommendations:", error.message);
-        console.error("Error details:", error);
-      }
-    };
-    setResponse(response)
-    fetchData();
+    axios.get('http://127.0.0.1:5000/recommendations')
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
 
   const selectItemHandler = (id, title) => {
-    props.navigation.navigate("ProductDetail", {
+    props.navigation.navigate('ProductDetail', {
       productId: id,
-      productTitle: title,
+      productTitle: title
     });
   };
 
   const SearchedProductItem = (item, navigation) => {
     return (
-      <ProductHitItem
-        hit={item}
-        onSelect={() => {
-          navigation.navigate("ProductDetail", {
-            productId: item.objectID,
-            productTitle: item.title,
-          });
-        }}
-      />
-    );
-  };
+      <ProductHitItem hit={item} onSelect={() => {
+        navigation.navigate('ProductDetail', {
+          productId: item.objectID,
+          productTitle: item.title
+        });
+        
+      }}/>
+    )
+  }
 
   if (error) {
     return (
@@ -137,15 +125,10 @@ const ProductsOverviewScreen = (props) => {
   return (
     <View>
       <InstantSearch searchClient={searchClient} indexName="products">
-        <SearchBox
-          focus={() => setFocus(!focus)}
-          focusState={focus}
-          search={() => setFocus(true)}
-        />
+        <SearchBox focus={() => setFocus(!focus)} focusState={focus} search={() => setFocus(true)} />
         {focus && (
           <InfiniteHits
-            listItem={SearchedProductItem}
-            navigation={props.navigation}
+            listItem={SearchedProductItem} navigation={props.navigation}
           />
         )}
       </InstantSearch>
@@ -154,8 +137,8 @@ const ProductsOverviewScreen = (props) => {
           onRefresh={loadProducts}
           refreshing={isRefreshing}
           data={products}
-          keyExtractor={(item) => item.id}
-          renderItem={(itemData) => (
+          keyExtractor={item => item.id}
+          renderItem={itemData => (
             <ProductItem
               image={itemData.item.imageUrl}
               title={itemData.item.title}
@@ -173,17 +156,18 @@ const ProductsOverviewScreen = (props) => {
         />
       )}
     </View>
+
   );
 };
 
-export const screenOptions = (navData) => {
+export const screenOptions = navData => {
   return {
-    headerTitle: "All Products",
+    headerTitle: 'Most Popular',
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Menu"
-          iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+          iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
           onPress={() => {
             navData.navigation.toggleDrawer();
           }}
@@ -194,18 +178,18 @@ export const screenOptions = (navData) => {
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Cart"
-          iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+          iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
           onPress={() => {
-            navData.navigation.navigate("Cart");
+            navData.navigation.navigate('Cart');
           }}
         />
       </HeaderButtons>
-    ),
+    )
   };
 };
 
 const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' }
 });
 
-export default ProductsOverviewScreen;
+export default MostPopularScreen;
