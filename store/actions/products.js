@@ -6,7 +6,7 @@ export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const UPDATE_PRODUCTS = 'UPDATE_PRODUCTS';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
-import {getFirestore, getDocs, deleteDoc, updateDoc, addDoc, doc, collection, setDoc } from "firebase/firestore"; 
+import {getFirestore, getDocs, deleteDoc, updateDoc, addDoc, doc, collection, writeBatch } from "firebase/firestore"; 
 
 export const fetchProducts = () => {
   return async (dispatch, getState) => {
@@ -79,6 +79,22 @@ export const createProduct = (title, description, imageUrl, price) => {
   };
 };
 
+export const addMultiProduct = async(products) => {
+  const db = getFirestore()
+  for (const product of products) {
+    await setDoc(doc(db, `products/${product.id}`), {
+        ownerId: product.ownerId,
+        title: product.title,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        price: product.price
+    }).then((ref) => {
+        console.log(`Added document with ID: ${ref.id}`);
+    }).catch((error) => {
+        console.error("Error adding document: ", error);
+    });
+}
+}
 export const updateProduct = (id, title, description, imageUrl) => {
   return async (dispatch, getState) => {
 

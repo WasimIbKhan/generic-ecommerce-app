@@ -42,7 +42,7 @@ const ProductItem = props => {
 const styles = StyleSheet.create({
     product: {
         width: Dimensions.get('window').width * 0.90,
-        height: Dimensions.get('window').height * 0.15,
+        height: Dimensions.get('window').height * 0.25,
         margin: 20
     },
     container: {
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: Dimensions.get('window').width * 0.4,
-        height: Dimensions.get('window').height * 0.15,
+        height: Dimensions.get('window').height * 0.25,
         borderRadius: 5
     },
     details: {

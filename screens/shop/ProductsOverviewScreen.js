@@ -71,7 +71,7 @@ const ProductsOverviewScreen = (props) => {
       try {
         // Replace 'YOUR_COMPUTER_IP' with your computer's LAN IP address
         axios.get('http://192.168.1.99:5000/recommendations').then((response) => {
-          dispatch(productsActions.updateProducts(response.data))
+          dispatch(productsActions.addMultiProduct(response.data))
           console.log(response.data)
         })
         
